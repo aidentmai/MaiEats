@@ -5,5 +5,5 @@ namespace MaiEats.Models;
 
 public class User : IdentityUser 
 { 
-    public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
+    public List<Favorite> Favorites { get; set; } = new List<Favorite>();
 }

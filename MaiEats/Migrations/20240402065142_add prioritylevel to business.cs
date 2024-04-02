@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace MaiEats.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class addpriorityleveltobusiness : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -60,6 +62,7 @@ namespace MaiEats.Migrations
                     Address = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Category = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
+                    PriorityLevel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -178,17 +181,16 @@ namespace MaiEats.Migrations
                 name: "Favorites",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PriorityLevel = table.Column<int>(type: "int", maxLength: 10, nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BusinessId = table.Column<int>(type: "int", nullable: false),
+                    PriorityLevel = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Favorites", x => x.Id);
+                    table.PrimaryKey("PK_Favorites", x => new { x.UserId, x.BusinessId });
                     table.ForeignKey(
                         name: "FK_Favorites_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -201,6 +203,15 @@ namespace MaiEats.Migrations
                         principalTable: "Businesses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "529418c1-4df7-4433-98bb-15f29ee72f86", null, "Admin", "ADMIN" },
+                    { "c55578bb-4801-4ed4-8c04-9d3cc45712a0", null, "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -246,11 +257,6 @@ namespace MaiEats.Migrations
                 name: "IX_Favorites_BusinessId",
                 table: "Favorites",
                 column: "BusinessId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Favorites_UserId",
-                table: "Favorites",
-                column: "UserId");
         }
 
         /// <inheritdoc />

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/MaiEats/MaiEats.csproj": {}
+    "/Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/MaiEats.csproj": {}
   },
   "projects": {
-    "/Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/MaiEats/MaiEats.csproj": {
+    "/Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/MaiEats.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/MaiEats/MaiEats.csproj",
+        "projectUniqueName": "/Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/MaiEats.csproj",
         "projectName": "MaiEats",
-        "projectPath": "/Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/MaiEats/MaiEats.csproj",
+        "projectPath": "/Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/MaiEats.csproj",
         "packagesPath": "/Users/vmai/.nuget/packages/",
-        "outputPath": "/Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/MaiEats/obj/",
+        "outputPath": "/Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/vmai/.nuget/NuGet/NuGet.Config"

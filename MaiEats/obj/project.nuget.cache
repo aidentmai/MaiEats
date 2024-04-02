@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SKGiEOlsh1wg1k4iUQ33LejdL7QPV901Ghpmo7zMyowbnKTNHVd94cGvauoFFAhFs0Z3EdLApU3StrW8r+2ZiA==",
+  "dgSpecHash": "wWf1BBmmY2+3W7wgwUZWSNBPC/drmFd2JCPIgDid8Rh/OU41NAj+FfL5L6vtcioCrnYnUoDI1MsdHt9Uzycj0Q==",
   "success": true,
-  "projectFilePath": "/Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/MaiEats/MaiEats.csproj",
+  "projectFilePath": "/Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/MaiEats.csproj",
   "expectedPackageFiles": [
     "/Users/vmai/.nuget/packages/automapper/12.0.1/automapper.12.0.1.nupkg.sha512",
     "/Users/vmai/.nuget/packages/automapper.extensions.microsoft.dependencyinjection/12.0.1/automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

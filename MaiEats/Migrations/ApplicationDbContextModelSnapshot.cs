@@ -53,6 +53,10 @@ namespace MaiEats.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("PriorityLevel")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("datetime2");
 
@@ -63,11 +67,8 @@ namespace MaiEats.Migrations
 
             modelBuilder.Entity("MaiEats.Core.Models.Favorite", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("BusinessId")
                         .HasColumnType("int");
@@ -75,22 +76,20 @@ namespace MaiEats.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PriorityLevel")
-                        .HasMaxLength(10)
+                    b.Property<int>("Id")
                         .HasColumnType("int");
+
+                    b.Property<string>("PriorityLevel")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId", "BusinessId");
 
                     b.HasIndex("BusinessId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Favorites");
                 });
@@ -189,13 +188,13 @@ namespace MaiEats.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "77cf38e8-6555-4e37-aa24-2fd1a5e64bef",
+                            Id = "529418c1-4df7-4433-98bb-15f29ee72f86",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c6bdf545-43bd-48ee-b452-3559904e406c",
+                            Id = "c55578bb-4801-4ed4-8c04-9d3cc45712a0",
                             Name = "User",
                             NormalizedName = "USER"
                         });

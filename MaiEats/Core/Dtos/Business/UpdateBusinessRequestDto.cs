@@ -1,3 +1,5 @@
+using MaiEats.Core.Enums;
+
 namespace MaiEats.Core.Dtos.Business;
 
 public class UpdateBusinessRequestDto
@@ -6,4 +8,5 @@ public class UpdateBusinessRequestDto
     public string Address { get; set; } = String.Empty;
     public string Description { get; set; } = String.Empty;
     public string Category { get; set; } = String.Empty;
+    public PriorityLevel PriorityLevel { get; set; }
 }

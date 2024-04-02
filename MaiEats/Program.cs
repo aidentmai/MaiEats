@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
 using MaiEats.Core.AutoMapperConfig;
 using MaiEats.Core.DbContext;
+using MaiEats.Core.Interfaces;
+using MaiEats.Core.Repository;
 using MaiEats.Core.Service;
 using MaiEats.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -92,6 +94,7 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<IFavoritesRepository, FavoritesRepository>();
 
 var app = builder.Build();
 

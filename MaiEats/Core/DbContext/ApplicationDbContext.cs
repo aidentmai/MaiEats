@@ -1,3 +1,4 @@
+using MaiEats.Core.Enums;
 using MaiEats.Core.Models;
 using MaiEats.Models;
 using Microsoft.AspNetCore.Identity;
@@ -16,7 +17,6 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<Business> Businesses { get; set; }
     // public DbSet<Category> Categories { get; set; }
     public DbSet<Favorite> Favorites { get; set; }
-    public DbSet<User> Users { get; set; }
     
     // Creating the relationship between entities
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -38,18 +38,30 @@ public class ApplicationDbContext : IdentityDbContext<User>
         };
         modelBuilder.Entity<IdentityRole>().HasData(roles);
 
+        modelBuilder.Entity<Favorite>(x => x.HasKey(f => new {f.UserId, f.BusinessId}));
+        
         modelBuilder.Entity<Favorite>()
             .HasOne(favorite => favorite.User)
             .WithMany(user => user.Favorites)
             .HasForeignKey(favorite => favorite.UserId);
-
+        
         modelBuilder.Entity<Favorite>()
             .HasOne(favorite => favorite.Business)
             .WithMany(business => business.Favorites)
             .HasForeignKey(favorite => favorite.BusinessId);
 
-        modelBuilder.Entity<User>()
-            .HasMany(user => user.Favorites);
+        modelBuilder.Entity<Favorite>()
+            .Property(favorite => favorite.PriorityLevel)
+            .HasConversion<string>();
+        
+        modelBuilder.Entity<Business>()
+            .Property(business => business.PriorityLevel)
+            .HasConversion<string>();
+        
+        
+
+        // modelBuilder.Entity<User>()
+        //     .HasMany(user => user.Favorites);
 
     }
     

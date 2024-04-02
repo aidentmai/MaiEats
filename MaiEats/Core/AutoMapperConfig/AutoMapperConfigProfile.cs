@@ -1,5 +1,6 @@
 using AutoMapper;
 using MaiEats.Core.Dtos.Business;
+// using MaiEats.Core.Dtos.Favorites;
 // using MaiEats.Core.Dtos.User;
 // using MaiEats.Core.Dtos.Category;
 using MaiEats.Core.Models;
@@ -16,10 +17,13 @@ public class AutoMapperConfigProfile : Profile
         CreateMap<Business, GetBusinessDto>()
             .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category));
         
+        // Favorite
+        // CreateMap<Favorite, GetFavoritesDto>();
+
         // Category
         // CreateMap<CreateCategoryDto, Category>();
         // CreateMap<Category, GetCategoryDto>();
-        
+
         // User
         // CreateMap<CreateUserDto, User>();
         // CreateMap<User, GetUserDto>();
