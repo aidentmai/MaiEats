@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using AutoMapper;
 using MaiEats.Core.DbContext;
 using MaiEats.Core.Dtos.Business;
@@ -16,11 +17,15 @@ public class BusinessController : ControllerBase
 {
     private ApplicationDbContext _context { get; }
     private IMapper _mapper { get; }
+    private HttpClient _httpClient;
+    private readonly IConfiguration _config;
 
-    public BusinessController(ApplicationDbContext context, IMapper mapper)
+    public BusinessController(ApplicationDbContext context, IMapper mapper, HttpClient httpClient, IConfiguration config)
     {
         _context = context;
         _mapper = mapper;
+        _httpClient = httpClient;
+        _config = config;
     }
     
     // CRUD Operations
@@ -65,6 +70,35 @@ public class BusinessController : ControllerBase
 
         return Ok(businessModel);
     }
+    
+    [HttpGet("search")]
+    public async Task<IActionResult> SearchBusinesses(string location, string term, string categories, string sort_by, int limit)
+    {
+        try
+        {
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
+            _httpClient.DefaultRequestHeaders.Add("accept", "application/json");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _config["YelpFusionKey"]);
+
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"https://api.yelp.com/v3/businesses/search?location={location}&term={term}&categories={categories}&sort_by={sort_by}&limit={limit}"),
+            };
+
+            using (var response = await _httpClient.SendAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+                var body = await response.Content.ReadAsStringAsync();
+                return Ok(body);
+            }
+        }
+        catch (Exception e)
+        {
+            // Log the exception or handle it as needed
+            return StatusCode(500, e.Message);
+        }
+    }
 
     [HttpPut]
     [Route("{id:int}")]
@@ -73,7 +107,10 @@ public class BusinessController : ControllerBase
         var existingBusiness = await _context.Businesses.FirstOrDefaultAsync(x => x.Id == id);
         existingBusiness.BusinessName = updateDto.BusinessName;
         existingBusiness.Address = updateDto.Address;
-        existingBusiness.Description = updateDto.Description;
+        existingBusiness.City = updateDto.City;
+        existingBusiness.ZipCode = updateDto.ZipCode;
+        existingBusiness.Country = updateDto.Country;
+        existingBusiness.State = updateDto.State;
         existingBusiness.Category = updateDto.Category;
 
         await _context.SaveChangesAsync();

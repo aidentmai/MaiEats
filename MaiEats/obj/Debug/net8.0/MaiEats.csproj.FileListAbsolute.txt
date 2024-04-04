@@ -291,3 +291,4 @@
 /Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/obj/Debug/net8.0/MaiEats.pdb
 /Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/obj/Debug/net8.0/MaiEats.genruntimeconfig.cache
 /Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/obj/Debug/net8.0/ref/MaiEats.dll
+/Users/vmai/Desktop/Coding Projects/NET/MaiEats/MaiEats/bin/Debug/net8.0/Newtonsoft.Json.dll

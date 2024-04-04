@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MaiEats.Migrations
 {
     /// <inheritdoc />
-    public partial class addpriorityleveltobusiness : Migration
+    public partial class ChangeBusinessModel : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -58,9 +58,13 @@ namespace MaiEats.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    BusinessId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     BusinessName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    ZipCode = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
+                    Country = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    State = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     Category = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
                     PriorityLevel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -210,8 +214,8 @@ namespace MaiEats.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "529418c1-4df7-4433-98bb-15f29ee72f86", null, "Admin", "ADMIN" },
-                    { "c55578bb-4801-4ed4-8c04-9d3cc45712a0", null, "User", "USER" }
+                    { "00f3bdee-c4e5-48d6-be64-1920b823f69c", null, "Admin", "ADMIN" },
+                    { "1e2c4f74-817c-4206-af65-6e15f1c08acb", null, "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(
