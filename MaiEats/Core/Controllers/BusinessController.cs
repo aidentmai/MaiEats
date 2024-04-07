@@ -2,11 +2,16 @@ using System.Net.Http.Headers;
 using AutoMapper;
 using MaiEats.Core.DbContext;
 using MaiEats.Core.Dtos.Business;
+using MaiEats.Core.Interfaces;
 using MaiEats.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.Azure.KeyVault;
 
 namespace MaiEats.Core.Controllers;
 
@@ -18,14 +23,14 @@ public class BusinessController : ControllerBase
     private ApplicationDbContext _context { get; }
     private IMapper _mapper { get; }
     private HttpClient _httpClient;
-    private readonly IConfiguration _config;
+    private IKeyVaultSecretService _keyVaultSecretService;
 
-    public BusinessController(ApplicationDbContext context, IMapper mapper, HttpClient httpClient, IConfiguration config)
+    public BusinessController(ApplicationDbContext context, IMapper mapper, HttpClient httpClient, IKeyVaultSecretService keyVaultSecretService)
     {
         _context = context;
         _mapper = mapper;
         _httpClient = httpClient;
-        _config = config;
+        _keyVaultSecretService = keyVaultSecretService;
     }
     
     // CRUD Operations
@@ -78,7 +83,11 @@ public class BusinessController : ControllerBase
         {
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Add("accept", "application/json");
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _config["YelpFusionKey"]);
+            
+            // Fetch Yelp API key from Azure Key Vault
+            var yelpFusionKey = await _keyVaultSecretService.GetSecretAsync("APIKEY");
+            
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", yelpFusionKey);
 
             var request = new HttpRequestMessage
             {

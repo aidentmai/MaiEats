@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using MaiEats.Core.AutoMapperConfig;
 using MaiEats.Core.DbContext;
 using MaiEats.Core.Interfaces;
@@ -7,6 +9,8 @@ using MaiEats.Core.Service;
 using MaiEats.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -95,6 +99,16 @@ builder.Services.AddSwaggerGen(option =>
 
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<IFavoritesRepository, FavoritesRepository>();
+
+// Grab config values
+var clientId = builder.Configuration.GetSection("KeyVault:ClientId").Value;
+var clientSecret = builder.Configuration.GetSection("KeyVault:ClientSecret").Value;
+var directoryId = builder.Configuration.GetSection("KeyVault:DirectoryId").Value;
+
+// Add scope for key vault client
+builder.Services.AddScoped<IKeyVaultClient>(sp => 
+    new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(new AzureServiceTokenProvider($"RunAs=App;AppId={clientId};TenantId={directoryId};AppKey={clientSecret}").KeyVaultTokenCallback)));
+builder.Services.AddScoped<IKeyVaultSecretService, KeyVaultSecretService>();
 
 // HttpClient Services
 builder.Services.AddHttpClient();
