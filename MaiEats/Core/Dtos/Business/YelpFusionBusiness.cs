@@ -1,15 +1,21 @@
-namespace MaiEats.Core.Dtos.Business;
-
 public class YelpFusionBusiness
 {
-    public string id { get; set; }
-    public string name { get; set; }
-    public string address1 { get; set; }
-    public string city { get; set; }
-    public string zip_code { get; set; }
-    public string country { get; set; }
-    public string state { get; set; }
-    public string title { get; set; } // Category
-    public string? phone { get; set; }
-    public string? display_phone { get; set; }
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public List<Category> Categories { get; set; }
+    public Location Location { get; set; }
+}
+
+public class Category
+{ 
+    public string Title { get; set; }
+}
+
+public class Location
+{
+    public string Address1 { get; set; }
+    public string City { get; set; }
+    public string Zip_Code { get; set; }
+    public string Country { get; set; }
+    public string State { get; set; }
 }

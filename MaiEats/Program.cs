@@ -1,6 +1,4 @@
 using System.Text.Json.Serialization;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using MaiEats.Core.AutoMapperConfig;
 using MaiEats.Core.DbContext;
 using MaiEats.Core.Interfaces;

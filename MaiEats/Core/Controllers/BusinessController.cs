@@ -5,13 +5,9 @@ using MaiEats.Core.Dtos.Business;
 using MaiEats.Core.Interfaces;
 using MaiEats.Core.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Azure.Services.AppAuthentication;
-using Microsoft.Azure.KeyVault;
+using Newtonsoft.Json;
 
 namespace MaiEats.Core.Controllers;
 
@@ -36,6 +32,7 @@ public class BusinessController : ControllerBase
     // CRUD Operations
 
     [HttpPost("Create")]
+    [Authorize]
     public async Task<ActionResult> CreateBusiness([FromBody] CreateBusinessDto businessDto)
     {
         if (!ModelState.IsValid)
@@ -47,6 +44,57 @@ public class BusinessController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok("Created business successfully");
+    }
+    
+    [HttpPost("CreateByBusinessId/{businessId}")]
+    [Authorize]
+    public async Task<ActionResult> CreateBusinessByBusinessId([FromRoute] string businessId)
+    {
+        try
+        {
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
+            _httpClient.DefaultRequestHeaders.Add("accept", "application/json");
+
+            // Fetch Yelp API key from Azure Key Vault
+            var yelpFusionKey = await _keyVaultSecretService.GetSecretAsync("APIKEY");
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", yelpFusionKey);
+
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"https://api.yelp.com/v3/businesses/{businessId}"),
+            };
+
+            using (var response = await _httpClient.SendAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+                var body = await response.Content.ReadAsStringAsync();
+                var businessDetails = JsonConvert.DeserializeObject<YelpFusionBusiness>(body);
+
+                // Create a new business object in the database
+                var business = new Business
+                {
+                    BusinessName = businessDetails.Name,
+                    Address = businessDetails.Location.Address1,
+                    City = businessDetails.Location.City,
+                    ZipCode = businessDetails.Location.Zip_Code,
+                    Country = businessDetails.Location.Country,
+                    State = businessDetails.Location.State,
+                    Category = businessDetails.Categories?.FirstOrDefault()?.Title
+                };
+
+                _context.Businesses.Add(business);
+                await _context.SaveChangesAsync();
+
+                return Ok(business);
+            }
+        }
+        catch (Exception e)
+        {
+            // Log the exception or handle it as needed
+            return StatusCode(500, e.Message);
+        }
     }
 
     [HttpGet("Get")]
@@ -99,6 +147,8 @@ public class BusinessController : ControllerBase
             {
                 response.EnsureSuccessStatusCode();
                 var body = await response.Content.ReadAsStringAsync();
+                   
+                
                 return Ok(body);
             }
         }
