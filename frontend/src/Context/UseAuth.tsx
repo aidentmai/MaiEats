@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState } from "react";
 import { UserProfile } from "../Models/User"; // Import the 'UserProfile' type
 import { toast } from "react-toastify"; // Import the 'toast' function
 import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
-import { registerAPI } from "../services/AuthService";
+import { loginAPI, registerAPI } from "../services/AuthService";
 import axios from "axios"; // Import the 'axios' library
 
 type UserContextType = {
@@ -99,4 +99,4 @@ useEffect(() => {
   );
 };
 
-export const UserAuth = () => React.useContext(UserContext);
+export const UseAuth = () => React.useContext(UserContext);
