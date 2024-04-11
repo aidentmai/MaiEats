@@ -1,4 +1,32 @@
+import * as Yup from "yup";
+import { UseAuth } from "../Context/UseAuth";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+type LoginFormsInput = {
+  userName: string;
+  password: string;
+};
+
+const validation = Yup.object().shape({
+  userName: Yup.string().required("Username is required"),
+  password: Yup.string().required("Password is required"),
+});
+
 const LoginPage = () => {
+  const { loginUser } = UseAuth();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormsInput>({
+    resolver: yupResolver(validation),
+  });
+
+  const handleLogin = (form: LoginFormsInput) => {
+    loginUser(form.userName, form.password)
+  }
+
   return (
     <section className="">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-custom lg:py-0">
@@ -7,21 +35,21 @@ const LoginPage = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight  md:text-2xl">
               Sign in to your account
             </h1>
-            <form className="space-y-4 md:space-y-6" action="#">
+            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(handleLogin)}>
               <div>
                 <label className="block mb-2 text-sm font-medium">
-                  Your email
+                  Username
                 </label>
                 <input
-                  type="email"
-                  name="email"
-                  id="email"
+                  type="text"
+                  id="username"
                   className="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg
                                focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5
                              dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com"
+                  {...register("userName")}
                   required={true}
-                ></input>
+                />
+                {errors.userName ? <p>{errors.userName.message}</p> : ""}
               </div>
               <div>
                 <label className="block mb-2 text-sm font-medium">
@@ -29,14 +57,15 @@ const LoginPage = () => {
                 </label>
                 <input
                   type="password"
-                  name="password"
                   id="password"
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg
                              focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5
                             dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  {...register("password")}
                   required={true}
-                ></input>
+                />
+                {errors.password ? <p>{errors.password.message}</p> : ""}
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-start">
@@ -48,7 +77,7 @@ const LoginPage = () => {
                       className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3
                                 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600
                                dark:ring-offset-gray-800"
-                    ></input>
+                    />
                   </div>
                   <div className="ml-3 text-sm">
                     <label className="">Remember me</label>

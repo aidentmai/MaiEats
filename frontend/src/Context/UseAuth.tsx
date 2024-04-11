@@ -46,14 +46,14 @@ useEffect(() => {
         if (res) {
           localStorage.setItem("token", res.data.token);
           const userObj = {
-            userName: res?.data.userName,
+            userName: res?.data.username,
             email: res?.data.email,
           };
           localStorage.setItem("user", JSON.stringify(userObj));
-          setToken(res?.data.token!);
+          setToken(res?.data.token);
           setUser(userObj!);
           toast.success("Login successful!"); // Call the 'toast' function with the desired message
-          navigate("/search");
+          navigate("/favorites");
         }
       })
       .catch((e) => toast.warning("Server error occurred!"));
@@ -65,14 +65,14 @@ useEffect(() => {
         if (res) {
           localStorage.setItem("token", res.data.token);
           const userObj = {
-            userName: res?.data.userName,
+            userName: res?.data.username,
             email: res?.data.email,
           };
           localStorage.setItem("user", JSON.stringify(userObj));
-          setToken(res?.data.token!);
+          setToken(res?.data.token);
           setUser(userObj!);
           toast.success("Login successful!"); // Call the 'toast' function with the desired message
-          navigate("/search");
+          navigate("/favorites");
         }
       })
       .catch((e) => toast.warning("Server error occurred!"));

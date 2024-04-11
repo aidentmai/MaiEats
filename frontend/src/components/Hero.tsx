@@ -1,11 +1,8 @@
-import React from "react";
 import { Link } from "react-router-dom";
+import { UseAuth } from "../Context/UseAuth";
 
-interface HeroProps {
-  onGetStartedClick: () => void;
-}
-
-const Hero: React.FC<HeroProps> = ({ onGetStartedClick }) => {
+const Hero = () => {
+  const { isLoggedIn } = UseAuth();
   return (
     <div className="flex flex-col justify-center max-w-[1200px] md:h-[70vh] mx-auto py-8">
       <p className="text-3xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600  inline-block font-bold">
@@ -36,14 +33,29 @@ const Hero: React.FC<HeroProps> = ({ onGetStartedClick }) => {
         brunch spot, organizing your favorites is simple.
       </p>
       <div className="flex justify-center mt-8">
-        <Link to="/login">
-          <button
-            onClick={onGetStartedClick}
-            className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 shadow-lg shadow-cyan-500/50 dark:shadow-lg dark:shadow-cyan-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-          >
-            Get Started Now
-          </button>
-        </Link>
+        {isLoggedIn() ? (
+          <Link to="/favorites">
+            <button
+              className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 
+                          to-cyan-600 hover:bg-gradient-to-br shadow-lg shadow-cyan-500/50 
+                            dark:shadow-lg dark:shadow-cyan-800/80 font-medium rounded-lg text-sm px-5 py-2.5 
+                            text-center me-2 mb-2"
+            >
+              Get Started Now
+            </button>
+          </Link>
+        ) : (
+          <Link to="/login">
+            <button
+              className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 
+                          to-cyan-600 hover:bg-gradient-to-br shadow-lg shadow-cyan-500/50 
+                            dark:shadow-lg dark:shadow-cyan-800/80 font-medium rounded-lg text-sm px-5 py-2.5 
+                            text-center me-2 mb-2"
+            >
+              Get Started Now
+            </button>
+          </Link>
+        )}
       </div>
     </div>
   );

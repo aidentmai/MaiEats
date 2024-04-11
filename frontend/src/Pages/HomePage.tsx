@@ -1,11 +1,11 @@
-import Hero from '../components/Hero'
+import Hero from "../components/Hero";
 
 const HomePage = () => {
-    return (
-        <div>
-                <Hero onGetStartedClick={() => {}} />
-        </div>
-    )
-}
+  return (
+    <div>
+      <Hero />
+    </div>
+  );
+};
 
 export default HomePage;
