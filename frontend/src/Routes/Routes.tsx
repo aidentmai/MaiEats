@@ -5,6 +5,7 @@ import SearchPage from "../Pages/SearchPage";
 import FavoritesPage from "../Pages/FavoritesPage";
 import LoginPage from "../Pages/LoginPage";
 import RegisterPage from "../Pages/RegisterPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
     {
@@ -14,8 +15,8 @@ export const router = createBrowserRouter([
             { path: "", element: <HomePage />},
             { path: "login", element: <LoginPage />},
             { path: "register", element: <RegisterPage />},
-            { path: "search", element: <SearchPage />},
-            { path: "favorites", element: <FavoritesPage />},
+            { path: "search", element: <ProtectedRoute><SearchPage /></ProtectedRoute>},
+            { path: "favorites", element: <ProtectedRoute><FavoritesPage /></ProtectedRoute>},
         ]
     }
 ])
