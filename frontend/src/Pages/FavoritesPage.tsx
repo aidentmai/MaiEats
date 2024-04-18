@@ -37,13 +37,13 @@ const FavoritesPage = () => {
       businessDeleteAPI(id)
   };
 
-  console.log(favorites)
-
   return (
     <div>
       <Navbar />
       {favorites.length === 0 ? (
-        <h1>No favorites saved</h1>
+        <div>
+          <h1 className="text-3xl text-center mt-8">No favorites saved</h1>
+        </div>
       ) : (
         favorites.map((favorite) => (
           <Card

@@ -23,6 +23,7 @@ public class Business : BaseEntity
     public string State { get; set; } = String.Empty;
     [MaxLength(25)]
     public string Category { get; set; } = String.Empty;
+    public string image_url { get; set; } = String.Empty;
     public PriorityLevel PriorityLevel { get; set; }
     
     // Relations & Navigation

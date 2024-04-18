@@ -12,6 +12,7 @@ public class GetBusinessDto
     public string Country { get; set; } = String.Empty;
     public string State { get; set; } = String.Empty;
     public string Category { get; set; } = String.Empty;
+    public string image_url { get; set; } = String.Empty;
     public PriorityLevel PriorityLevel { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 }

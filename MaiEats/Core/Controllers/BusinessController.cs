@@ -75,13 +75,15 @@ public class BusinessController : ControllerBase
                 // Create a new business object in the database
                 var business = new Business
                 {
+                    BusinessId = businessDetails.Id,
                     BusinessName = businessDetails.Name,
                     Address = businessDetails.Location.Address1,
                     City = businessDetails.Location.City,
                     ZipCode = businessDetails.Location.Zip_Code,
                     Country = businessDetails.Location.Country,
                     State = businessDetails.Location.State,
-                    Category = businessDetails.Categories?.FirstOrDefault()?.Title
+                    Category = businessDetails.Categories?.FirstOrDefault()?.Title,
+                    image_url = businessDetails.image_url,
                 };
 
                 _context.Businesses.Add(business);
@@ -125,7 +127,7 @@ public class BusinessController : ControllerBase
     }
     
     [HttpGet("search")]
-    public async Task<IActionResult> SearchBusinesses(string location, string term, string categories, string sort_by, int limit)
+    public async Task<IActionResult> SearchBusinesses(string term, string location)
     {
         try
         {
@@ -140,7 +142,7 @@ public class BusinessController : ControllerBase
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://api.yelp.com/v3/businesses/search?location={location}&term={term}&categories={categories}&sort_by={sort_by}&limit={limit}"),
+                RequestUri = new Uri($"https://api.yelp.com/v3/businesses/search?term={term}&location={location}"),
             };
 
             using (var response = await _httpClient.SendAsync(request))
@@ -164,6 +166,7 @@ public class BusinessController : ControllerBase
     public async Task<Business?> Update([FromRoute] int id, [FromBody] UpdateBusinessRequestDto updateDto)
     {
         var existingBusiness = await _context.Businesses.FirstOrDefaultAsync(x => x.Id == id);
+        existingBusiness.BusinessId = updateDto.BusinessId;
         existingBusiness.BusinessName = updateDto.BusinessName;
         existingBusiness.Address = updateDto.Address;
         existingBusiness.City = updateDto.City;
@@ -171,6 +174,7 @@ public class BusinessController : ControllerBase
         existingBusiness.Country = updateDto.Country;
         existingBusiness.State = updateDto.State;
         existingBusiness.Category = updateDto.Category;
+        existingBusiness.image_url = updateDto.image_url;
 
         await _context.SaveChangesAsync();
         
