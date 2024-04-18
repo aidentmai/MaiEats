@@ -1,64 +1,173 @@
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { Business } from "../business";
+import { businessCreateAPI } from "../services/BusinessService";
+import { FavoritesGet } from "../favorites";
+import { toast } from "react-toastify";
 
 type CardProps = {
-  children: React.ReactNode;
+  business: Business;
+  favorite: FavoritesGet;
+  onFavoritesCreate?: (id: number) => void;
+  onFavoritesDelete?: (id: number) => void;
+  updateResults?: () => void;
 };
 
-const Card = ({ business }) => {
+const Card = ({
+  business,
+  favorite,
+  onFavoritesCreate,
+  onFavoritesDelete,
+  updateResults
+}: CardProps) => {
   const location = useLocation();
 
-  console.log(business);
+  
+
+  const handleClick = async () => {
+    if (location.pathname === "/search") {
+      const searchResults = JSON.parse(localStorage.getItem("searchResults"));
+      console.log("Search Results", searchResults)
+      
+      searchResults.map((results: Business) => {
+        if(results.id === business.id) {
+          console.log("result id here", results.id)
+          console.log("business id here", business.id)
+          results.isSaved = true;
+        }
+      })
+      
+      localStorage.setItem("searchResults", JSON.stringify(searchResults));
+      
+      console.log("Search", searchResults)
+      
+      if (business.isSaved) {
+        toast.warning("Business is already saved to favorites", {
+          position: "bottom-right",
+        });
+      }
+      
+
+      console.log(business.isSaved)
+
+      const response = await businessCreateAPI(business.id);
+      console.log("RESPONSE HERE:", response);
+
+      const idNumber = parseInt(response!.data.id);
+
+      console.log(favorite)
+
+      const isIdInFavorites = favorite.some((fav) => {
+        const isIdMatch = fav.businessId === business.id;
+        console.log("FAV ID HERE", fav.businessId);
+        return isIdMatch;
+      });
+
+      console.log("IS ID IN FAVORITES", isIdInFavorites);
+
+      if (!isIdInFavorites) {
+        onFavoritesCreate!(idNumber);
+        console.log(idNumber);
+        console.log(isIdInFavorites);
+      }
+    }
+    if (location.pathname === "/favorites") {
+      console.log(favorite.id);
+      onFavoritesDelete!(favorite.id);
+    }
+  };
+
+  // console.log(business)
+  // console.log(business.location.address1)
+
   return (
     <>
-      <div
-        className="flex flex-col items-center justify-evenly bg-white border border-gray-200 rounded-lg 
-     md:flex-row  mt-9 mb-9 p-6 max-w-[1200px] mx-auto"
-        style={{ maxHeight: "300px", minHeight: "300px", width: "95%" }}
-      >
-        <div style={{ width: "33%", height: "100%" }}>
-          <img
-            // className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg"
-            src={business.image_url}
-            alt=""
-            style={{ height: "100%", width: "100%" }}
-          />
-        </div>
-        <div>
-          <div className="flex flex-col justify-between p-4 leading-normal">
-            <h5 className="mb-2 text-2xl font-bold tracking-tight">
-              {business.name}
-            </h5>
-            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-              {business.location.address1}
+      {location.pathname === "/search" ? (
+        <div
+          className="card card-side bg-base-100 shadow-xl flex flex-col items-center justify-evenly border-gray-200 rounded-lg 
+     md:flex-row  mt-9 mb-9 p-6 max-w-[1200px] mx-auto overflow-auto"
+        >
+          <figure>
+            <img
+              className="w-64 h-64 rounded-tr-[10px] rounded-br-[10px]"
+              src={business.image_url}
+              alt=""
+            />
+          </figure>
+          <div className="card-body">
+            <h2 className="card-title">{business.name}</h2>
+            <p>{business.location.address1}</p>
+            <p>
+              {business.location.city} {", "} {business.location.state}{" "}
+              {business.location.zip_code}
             </p>
-            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-              {business.location.city}
-              {", "}
-              {business.location.state} {business.location.zip_code}
-            </p>
-            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400"></p>
+            <div className="card-actions justify-end">
+              {location.pathname === "/search" ? (
+                <button
+                  className={
+                    business.isSaved
+                      ? "btn w-36 bg-red-500 text-white hover:bg-red-800 "
+                      : "btn bg-blue-500 text-white hover:bg-blue-800"
+                  }
+                  onClick={handleClick}
+                >
+                  {business.isSaved ? "Remove" : "Save to favorites"}
+                </button>
+              ) : location.pathname === "/favorites" ? (
+                <button
+                  className="btn w-36 bg-red-500 hover:bg-red-800 text-white"
+                  onClick={handleClick}
+                >
+                  Remove
+                </button>
+              ) : null}
+            </div>
           </div>
         </div>
+      ) : location.pathname === "/favorites" ? (
         <div>
-          {location.pathname === "/search" ? (
-            <a
-              href="#"
-              className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white 
-          bg-cyan-500 rounded-lg hover:bg-cyan-800"
-            >
-              Save to favorites
-            </a>
-          ) : location.pathname === "/favorites" ? (
-            <a
-              href="#"
-              className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white 
-              bg-red-500 rounded-lg hover:bg-red-800"
-            >
-              Remove
-            </a>
-          ) : null}
+          <div
+            className="card card-side bg-base-100 shadow-xl flex flex-col items-center justify-evenly border-gray-200 rounded-lg 
+     md:flex-row  mt-9 mb-9 p-6 max-w-[1200px] mx-auto overflow-auto"
+          >
+            <figure>
+              <img
+                className="w-64 h-64 rounded-tr-[10px] rounded-br-[10px]"
+                src={favorite.imageUrl}
+                alt=""
+              />
+            </figure>
+            <div className="card-body">
+              <h2 className="card-title">{favorite.businessName}</h2>
+              <p>{favorite.address}</p>
+              <p>
+                {favorite.city} {", "} {favorite.state} {favorite.zipCode}
+              </p>
+              <div className="card-actions justify-end">
+                {location.pathname === "/search" ? (
+                  <button
+                    className={
+                      business.isSaved
+                        ? "btn w-36 bg-red-500 text-white hover:bg-red-800 "
+                        : "btn bg-blue-500 text-white hover:bg-blue-800"
+                    }
+                    onClick={handleClick}
+                  >
+                    {business.isSaved ? "Remove" : "Save to favorites"}
+                  </button>
+                ) : location.pathname === "/favorites" ? (
+                  <button
+                    className="btn w-36 bg-red-500 hover:bg-red-800 text-white"
+                    onClick={handleClick}
+                  >
+                    Remove
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      ) : null}
     </>
   );
 };

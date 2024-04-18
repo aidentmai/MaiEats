@@ -1,10 +1,19 @@
-export type BusinessSearch = {
-    businessName: string;
-    businessAddress: string;
-    city: string;
-    zipcode: string;
-    state: string;
-    country: string;
-    category: string;
-    prioritylevel: string;
-  };
+interface Location {
+  address1: string;
+  city: string;
+  state: string;
+  zip_code: string;
+}
+
+export interface Business {
+  id: string;
+  name: string;
+  location: Location;
+  image_url: string;
+  isSaved: boolean;
+}
+
+export type BusinessPost = {
+  id: string;
+  idNumber: number;
+};

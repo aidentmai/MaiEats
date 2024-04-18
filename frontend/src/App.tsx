@@ -1,16 +1,20 @@
-import Navbar from "./components/Navbar";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { UserProvider } from "./Context/UseAuth";
 import { Outlet } from "react-router";
+import { FavoritesProvider } from "./Context/FavoritesContext";
+import { SearchProvider } from "./Context/SearchContext";
 
 function App() {
   return (
     <>
       <UserProvider>
-        <Navbar />
-        <Outlet />
-        <ToastContainer />
+        <SearchProvider>
+          <FavoritesProvider>
+            <Outlet />
+            <ToastContainer />
+          </FavoritesProvider>
+        </SearchProvider>
       </UserProvider>
     </>
   );
