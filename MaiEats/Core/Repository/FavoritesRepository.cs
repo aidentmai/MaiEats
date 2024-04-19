@@ -22,6 +22,7 @@ public class FavoritesRepository : IFavoritesRepository
             .Select(business => new Business
             {
                Id = business.BusinessId,
+               BusinessId = business.Business.BusinessId,
                BusinessName = business.Business.BusinessName,
                Address = business.Business.Address,
                City = business.Business.City,
@@ -29,7 +30,8 @@ public class FavoritesRepository : IFavoritesRepository
                Country = business.Business.Country,
                State = business.Business.State,
                Category = business.Business.Category,
-               PriorityLevel = business.Business.PriorityLevel
+               PriorityLevel = business.Business.PriorityLevel,
+               image_url = business.Business.image_url
             })
             .ToListAsync();
     }
