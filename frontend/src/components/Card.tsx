@@ -6,9 +6,10 @@ import { toast } from "react-toastify";
 
 type CardProps = {
   business: Business;
-  favorite: FavoritesGet;
+  favorite: FavoritesGet[];
   onFavoritesCreate?: (id: number) => void;
   onFavoritesDelete?: (id: number) => void;
+  updateResults?: () => void;
 };
 
 const Card = ({
@@ -16,54 +17,63 @@ const Card = ({
   favorite,
   onFavoritesCreate,
   onFavoritesDelete,
+  updateResults,
 }: CardProps) => {
   const location = useLocation();
 
   const handleClick = async () => {
     if (location.pathname === "/search") {
+      // Get search results from localStorage
       const searchResults = JSON.parse(
         localStorage.getItem("searchResults") || ""
       );
-      console.log("Search Results", searchResults);
 
+      // Update isSaved property of business object
       searchResults.map((results: Business) => {
         if (results.id === business.id) {
-          console.log("result id here", results.id);
-          console.log("business id here", business.id);
           results.isSaved = true;
         }
       });
 
+      // Save updated search results to localStorage
       localStorage.setItem("searchResults", JSON.stringify(searchResults));
-
-      console.log("Search", searchResults);
+      updateResults!();
 
       if (business.isSaved) {
-        toast.warning("Business is already saved to favorites", {
-          position: "bottom-right",
+        favorite.map((fav) => {
+          if (fav.businessId === business.id) {
+            onFavoritesDelete!(fav.id);
+            searchResults.map((results: Business) => {
+              if (results.id === business.id) {
+                results.isSaved = false;
+                localStorage.setItem(
+                  "searchResults",
+                  JSON.stringify(searchResults)
+                );
+                updateResults!();
+              }
+            });
+            console.log("searchResults after deleting", searchResults);
+          }
         });
+        return;
       }
 
-      console.log(business.isSaved);
+      console.log(searchResults);
 
       const response = await businessCreateAPI(business.id);
       console.log("RESPONSE HERE:", response);
 
       const idNumber = parseInt(response!.data.id);
 
-      console.log(favorite);
-
       const isIdInFavorites = favorite.some((fav) => {
-        const isIdMatch = fav.businessId === business.id;
-        console.log("FAV ID HERE", fav.businessId);
-        return isIdMatch;
+        return fav.businessId === business.id;
       });
 
       console.log("IS ID IN FAVORITES", isIdInFavorites);
 
       if (!isIdInFavorites) {
         onFavoritesCreate!(idNumber);
-        console.log(idNumber);
         console.log(isIdInFavorites);
       }
     }
@@ -131,7 +141,7 @@ const Card = ({
             <figure>
               <img
                 className="w-64 h-64 rounded-tr-[10px] rounded-br-[10px]"
-                src={favorite.imageUrl}
+                src={favorite.image_url}
                 alt=""
               />
             </figure>
@@ -142,14 +152,12 @@ const Card = ({
                 {favorite.city} {", "} {favorite.state} {favorite.zipCode}
               </p>
               <div className="card-actions justify-end">
-                (
-                  <button
-                    className="btn w-36 bg-red-500 hover:bg-red-800 text-white"
-                    onClick={handleClick}
-                  >
-                    Remove
-                  </button>
-                )
+                <button
+                  className="btn w-36 bg-red-500 hover:bg-red-800 text-white"
+                  onClick={handleClick}
+                >
+                  Remove
+                </button>
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import Card from "../components/Card";
 import { FavoritesGet } from "../favorites";
 import {
@@ -9,10 +9,12 @@ import {
 import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
 import { UseSearch } from "../Context/SearchContext";
+import { FavoritesContext } from "../Context/FavoritesContext";
 
 const SearchPage = () => {
   const { results, setResults } = UseSearch();
-  const [favorites, setFavorites] = useState<FavoritesGet[] | null>([]);
+  // const [favorites, setFavorites] = useState<FavoritesGet[] | null>([]);
+  const { favorites, addFavorite, removeFavorite } = useContext(FavoritesContext);
   
   useEffect(() => {
     getFavorites();
@@ -27,23 +29,31 @@ const SearchPage = () => {
     favoritesGetAPI()
       .then((response) => {
         if (response?.data) {
-          setFavorites(response?.data);
+          response.data.forEach((favorite: FavoritesGet) => addFavorite(favorite));
         }
       })
       .catch((e) => {
-        setFavorites(null);
+        toast.warning("Failed to retrieve favorites", {
+          position: "bottom-right",
+        });
       });
   };
 
   const onFavoritesCreate = async (id: number) => {
+    // Check if business already exists in favorites
+    if (favorites.some((fav) => fav.id === id)) {
+      toast.warning("Business already saved to favorites", {
+        position: "bottom-right",
+      });
+      return;
+    }
     favoritesAddAPI(id)
       .then((response) => {
         if (response?.status === 204) {
           toast.success("Saved to favorites", {
             position: "bottom-right",
           });
-          getFavorites();
-          setFavorites([...(favorites ?? []), response.data as FavoritesGet]);
+          getFavorites(); // Update favorites list
         }
       })
       .catch((e) => {
@@ -60,7 +70,7 @@ const SearchPage = () => {
           toast.success("Removed from favorites", {
             position: "bottom-right",
           });
-          getFavorites();
+          removeFavorite(id);
         }
       })
       .catch((e) => {
@@ -77,7 +87,7 @@ const SearchPage = () => {
     }
   };
 
-  console.log(results);
+  console.log("fav array", favorites);
 
   return (
     <>

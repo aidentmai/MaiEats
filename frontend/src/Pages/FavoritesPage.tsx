@@ -1,18 +1,19 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import Card from "../components/Card";
-import { FavoritesGet } from "../favorites";
 import { favoritesDeleteAPI, favoritesGetAPI } from "../services/FavoritesService";
 import { toast } from "react-toastify";
-import { businessDeleteAPI } from "../services/BusinessService";
 import Navbar from "../components/Navbar";
+import { FavoritesContext } from "../Context/FavoritesContext";
+import { FavoritesGet } from "../favorites";
 
 const FavoritesPage = () => {
-  const [favorites, setFavorites] = useState<FavoritesGet[]>([]);
+  const { favorites, addFavorite, removeFavorite } = useContext(FavoritesContext);
 
   useEffect(() => {
     const getFavorites = async () => {
       const res = await favoritesGetAPI();
-      setFavorites(res!.data);
+      console.log("FAVORITES RESPONSE", res!.data);
+      res!.data.forEach((favorite: FavoritesGet) => addFavorite(favorite));
     };
 
     getFavorites();
@@ -25,7 +26,7 @@ const FavoritesPage = () => {
           toast.success("Removed from favorites", {
             position: "bottom-right",
           });
-          setFavorites(prevFavorites => prevFavorites.filter(favorite => favorite.id !== id));
+          removeFavorite(id);
         }
       })
       .catch(() => {
@@ -33,8 +34,6 @@ const FavoritesPage = () => {
             position: "bottom-right",
           });
       });
-    
-      businessDeleteAPI(id)
   };
 
   return (
@@ -45,9 +44,9 @@ const FavoritesPage = () => {
           <h1 className="text-3xl text-center mt-8">No favorites saved</h1>
         </div>
       ) : (
-        favorites.map((favorite) => (
+        favorites.map((favorite, index) => (
           <Card
-            key={favorite.id}
+            key={index}
             business={favorite.business}
             favorite={favorite}
             onFavoritesDelete={onFavoritesDelete}

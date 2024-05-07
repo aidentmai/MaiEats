@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { UseAuth } from "../Context/UseAuth";
-import { SyntheticEvent, useEffect, useRef, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import axios from "axios";
 import { UseSearch } from "../Context/SearchContext";
 import { useNavigate } from "react-router-dom";
+import { Business } from "../business";
 
 const Navbar = () => {
   const [term, setTerm] = useState<string>("");
@@ -25,9 +26,8 @@ const Navbar = () => {
           },
         })
         .then(({ data }) => {
-          data.businesses.map((business) => {
+          data.businesses.map((business: Business) => {
             business.isSaved = false;
-            console.log("Business", business);
             return business;
           });
           setResults(data.businesses);
@@ -97,17 +97,6 @@ const Navbar = () => {
           </form>
         </div>
         {isLoggedIn() ? (
-          // <div className="hidden lg:flex items-center space-x-6 text-back">
-          //   <div className="hover:text-darkBlue">Welcome, {user?.userName}</div>
-          //   <a
-          //     onClick={logout}
-          //     className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600
-          //     hover:bg-gradient-to-br shadow-lg shadow-cyan-500/50 dark:shadow-lg
-          //     dark:shadow-cyan-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-          //   >
-          //     Logout
-          //   </a>
-          // </div>
           <div>
             <button
               id="dropdownDividerButton"
