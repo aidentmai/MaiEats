@@ -78,13 +78,9 @@ const Card = ({
       }
     }
     if (location.pathname === "/favorites") {
-      console.log(favorite.id);
       onFavoritesDelete!(favorite.id);
     }
   };
-
-  // console.log(business)
-  // console.log(business.location.address1)
 
   return (
     <>
