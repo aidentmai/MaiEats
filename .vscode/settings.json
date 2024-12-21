@@ -1,0 +1,5 @@
+{
+  "appService.preDeployTask": "publish-release",
+  "appService.deploySubpath": "MaiEats/bin/Release/net8.0/publish",
+  "appService.defaultWebAppToDeploy": "/subscriptions/8ff47784-2fc2-41c9-9753-b9cc1f24d522/resourceGroups/appsvc_windows_centralus/providers/Microsoft.Web/sites/maieats"
+}
